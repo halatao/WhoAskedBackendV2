@@ -18,6 +18,23 @@ public class WhoAskedContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<UserInQueue>(entity =>
+        {
+            entity.HasKey(sc => new {sc.UserId, sc.QueueId});
+
+            entity
+                .HasOne<User>(uq => uq.User)
+                .WithMany(u => u.Queues)
+                .HasForeignKey(u => u.QueueId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity
+                .HasOne<Queue>(uq => uq.Queue)
+                .WithMany(q => q.Users)
+                .HasForeignKey(uq => uq.QueueId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+        });
+
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(q => q.UserId);

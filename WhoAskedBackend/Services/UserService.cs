@@ -50,4 +50,9 @@ public class UserService : ModelServiceBase
         return _context.Users!.FirstOrDefault(q => q.UserName == username) ??
                throw CreateException($"User with id {username} does not exist", null);
     }
+
+    public async Task<List<User>> GetAll()
+    {
+        return await _context.Users.ToListAsync();
+    }
 }

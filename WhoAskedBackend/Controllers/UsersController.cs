@@ -33,6 +33,15 @@ namespace WorkIT_Backend.Controllers
             return Ok(user);
         }
 
+        [HttpGet("All")]
+        [AllowAnonymous] //[Authorize(Roles = CustomRoles.User)]
+        public async Task<IActionResult> GetAll()
+        {
+            var user = await _userService.GetAll();
+
+            return Ok(user);
+        }
+
         [HttpPost("Login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login(string username, string password)
