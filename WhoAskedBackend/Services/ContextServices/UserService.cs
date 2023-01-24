@@ -10,12 +10,13 @@ public class UserService : ModelServiceBase
 {
     private readonly WhoAskedContext _context;
     private readonly SecurityService _securityService;
+    private readonly List<string> _activeUsers;
 
-    public UserService([FromServices] WhoAskedContext context, [FromServices] SecurityService securityService,
-        [FromServices] QueueProvider queueProvider)
+    public UserService([FromServices] WhoAskedContext context, [FromServices] SecurityService securityService)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _securityService = securityService;
+        _activeUsers = new List<string>();
     }
 
     public async Task<User> GetUserByCredentials(string username, string password)
@@ -38,7 +39,7 @@ public class UserService : ModelServiceBase
         if (_context.Users!.Any(q => q.UserName == username))
             throw CreateException($"User {username} already exists.", null);
         var hash = _securityService.HashPassword(password);
-        var ret = new User {UserName = username, PasswordHash = hash};
+        var ret = new User {UserName = username, PasswordHash = hash, Avatar = ""};
 
         _context.Users!.Add(ret);
         await _context.SaveChangesAsync();
@@ -48,12 +49,39 @@ public class UserService : ModelServiceBase
 
     public async Task<User> GetByUsername(string username)
     {
-        return _context.Users!.FirstOrDefault(q => q.UserName == username) ??
+        return await _context.Users!.FirstOrDefaultAsync(q => q.UserName == username) ??
                throw CreateException($"User with id {username} does not exist", null);
     }
 
     public async Task<List<User>> GetAll()
     {
-        return await _context.Users.ToListAsync();
+        return await GetIncluded();
+    }
+
+    public void ToggleUserActive(string username, bool active)
+    {
+        if (!active)
+        {
+            _activeUsers.Remove(_activeUsers.First(q => q == username));
+        }
+        else
+        {
+            _activeUsers.Add(username);
+        }
+    }
+
+    public List<string> GetActiveUsers()
+    {
+        return _activeUsers;
+    }
+
+    private async Task<List<User>> GetIncluded()
+    {
+        if (this._context.Users == null)
+        {
+            return new List<User>();
+        }
+
+        return await this._context.Users.Include(q => q.Queues).ThenInclude(q => q.Queue).ToListAsync();
     }
 }

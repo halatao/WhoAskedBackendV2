@@ -19,7 +19,12 @@ builder.Services.AddTransient<QueueProvider>();
 builder.Services.AddTransient<MessageProvider>();
 
 builder.Services.AddTransient<UserService>();
+builder.Services.AddTransient<UserInQueueService>();
 
+builder.Services.AddControllersWithViews()
+    .AddNewtonsoftJson(options =>
+        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+    );
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(opt =>
@@ -41,6 +46,7 @@ builder.Services.AddAuthentication(opt =>
         ClockSkew = TimeSpan.Zero,
     };
 });
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

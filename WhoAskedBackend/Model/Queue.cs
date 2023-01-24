@@ -8,6 +8,7 @@ public class Queue
 
     public long QueueId { get; set; }
     public string QueueName { get; set; }
+    public string LatestMessage { get; set; }
 
     public User Owner { get; set; }
     public long OwnerId { get; set; }

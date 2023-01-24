@@ -54,6 +54,8 @@ public class WhoAskedContext : DbContext
                 .WithOne(q => q.Owner)
                 .HasForeignKey(q => q.OwnerId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity.Property(q => q.Avatar);
         });
 
         modelBuilder.Entity<Queue>(entity =>

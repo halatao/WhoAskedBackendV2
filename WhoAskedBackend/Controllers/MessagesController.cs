@@ -17,15 +17,15 @@ namespace WhoAskedBackend.Controllers
         }
 
         [HttpGet("{queueId}/{amount}")]
-        public List<MessageDto> GetMessages(int queueId, int amount)
+        public IActionResult GetMessages(int queueId, int amount)
         {
-            return _messageProvider?.RetrieveLatestMessages(queueId, amount)!.Select(mess => new MessageDto
+            return Ok(_messageProvider?.RetrieveLatestMessages(queueId, amount)!.Select(mess => new MessageDto
             {
                 QueueId = mess.QueueId,
                 Sender = mess.Sender,
                 Sent = mess.Sent,
                 Mess = mess.Mess,
-            }).ToList() ?? throw new InvalidOperationException();
+            }).ToList());
         }
 
         [HttpPost]

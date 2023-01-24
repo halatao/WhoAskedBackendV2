@@ -19,4 +19,18 @@ public class QueueService
             return new List<Queue>();
         return await _context.Queue.ToListAsync();
     }
+
+    public async Task<Queue> Create(string queueName, string latestMessage, long ownerId)
+    {
+        var ret = new Queue
+        {
+            QueueName = queueName,
+            LatestMessage = latestMessage,
+            OwnerId = ownerId
+        };
+        _context.Add(ret);
+        await _context.SaveChangesAsync();
+
+        return ret;
+    }
 }
