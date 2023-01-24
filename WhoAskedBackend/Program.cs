@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 SecurityService securityService = new(builder.Configuration);
 builder.Services.AddDbContext<WhoAskedContext>();
+builder.Services.AddSingleton<ActiveUsersService>();
 builder.Services.AddTransient<QueueService>();
 builder.Services.AddSingleton<SecurityService>();
 builder.Services.AddSingleton<BrokerConnection>();

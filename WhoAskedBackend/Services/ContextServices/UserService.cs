@@ -10,13 +10,11 @@ public class UserService : ModelServiceBase
 {
     private readonly WhoAskedContext _context;
     private readonly SecurityService _securityService;
-    private readonly List<string> _activeUsers;
 
     public UserService([FromServices] WhoAskedContext context, [FromServices] SecurityService securityService)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _securityService = securityService;
-        _activeUsers = new List<string>();
     }
 
     public async Task<User> GetUserByCredentials(string username, string password)
@@ -56,23 +54,6 @@ public class UserService : ModelServiceBase
     public async Task<List<User>> GetAll()
     {
         return await GetIncluded();
-    }
-
-    public void ToggleUserActive(string username, bool active)
-    {
-        if (!active)
-        {
-            _activeUsers.Remove(_activeUsers.First(q => q == username));
-        }
-        else
-        {
-            _activeUsers.Add(username);
-        }
-    }
-
-    public List<string> GetActiveUsers()
-    {
-        return _activeUsers;
     }
 
     private async Task<List<User>> GetIncluded()

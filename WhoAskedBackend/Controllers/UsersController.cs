@@ -19,18 +19,21 @@ namespace WorkIT_Backend.Controllers
     {
         private readonly UserService _userService;
         private readonly SecurityService _securityService;
+        private readonly ActiveUsersService _activeUsersService;
 
-        public UsersController([FromServices] SecurityService securityService, [FromServices] UserService userService)
+        public UsersController([FromServices] SecurityService securityService, [FromServices] UserService userService,
+            ActiveUsersService activeUsersService)
         {
             _securityService = securityService;
             _userService = userService;
+            _activeUsersService = activeUsersService;
         }
 
         [AllowAnonymous] //[Authorize(Roles = CustomRoles.User)]
         [HttpPost("UserStatus")]
         public IActionResult UserStatus(string username, bool active)
         {
-            _userService.ToggleUserActive(username, active);
+            _activeUsersService.ToggleUserActive(username, active);
             return Ok();
         }
 
@@ -38,7 +41,7 @@ namespace WorkIT_Backend.Controllers
         [HttpGet("UsersOnline")]
         public IActionResult UsersOnline()
         {
-            return Ok(_userService.GetActiveUsers());
+            return Ok(_activeUsersService.GetActiveUsers());
         }
 
         [AllowAnonymous] //[Authorize(Roles = CustomRoles.User)]
