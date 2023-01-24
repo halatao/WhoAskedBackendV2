@@ -16,4 +16,5 @@ public class User
     public string Role { get; } = "user";
 
     public ICollection<UserInQueue> Queues { get; set; }
+    public ICollection<Queue> OwnedQueues { get; set; }
 }

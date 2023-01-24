@@ -6,8 +6,8 @@ public class Queue
     {
     }
 
-    public long Id { get; set; }
-    public string Name { get; set; }
+    public long QueueId { get; set; }
+    public string QueueName { get; set; }
 
     public User Owner { get; set; }
     public long OwnerId { get; set; }

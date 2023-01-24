@@ -46,6 +46,20 @@ public class WhoAskedContext : DbContext
 
             entity.Property(q => q.PasswordHash)
                 .IsRequired();
+
+            entity
+                .HasMany(u => u.OwnedQueues)
+                .WithOne(q => q.Owner)
+                .HasForeignKey(q => q.OwnerId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+        });
+
+        modelBuilder.Entity<Queue>(entity =>
+        {
+            entity.HasKey(q => q.QueueId);
+            entity.Property(q => q.QueueId).ValueGeneratedOnAdd();
+
+            entity.Property(q => q.QueueName).IsRequired();
         });
     }
 
