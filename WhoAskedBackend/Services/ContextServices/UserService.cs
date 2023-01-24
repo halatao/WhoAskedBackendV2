@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WhoAskedBackend.Data;
+using WhoAskedBackend.Services.Messaging;
 using WorkIT_Backend.Model;
-using WorkIT_Backend.Services;
 
-namespace WhoAskedBackend.Services;
+namespace WhoAskedBackend.Services.ContextServices;
 
 public class UserService : ModelServiceBase
 {
     private readonly WhoAskedContext _context;
     private readonly SecurityService _securityService;
 
-    public UserService([FromServices] WhoAskedContext context, [FromServices] SecurityService securityService)
+    public UserService([FromServices] WhoAskedContext context, [FromServices] SecurityService securityService,
+        [FromServices] QueueProvider queueProvider)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _securityService = securityService;

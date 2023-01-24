@@ -1,6 +1,7 @@
-﻿using WhoAskedBackend.Services;
+﻿using WhoAskedBackend.Services.ContextServices;
+using WorkIT_Backend.Services;
 
-namespace WorkIT_Backend.Services;
+namespace WhoAskedBackend.Services;
 
 public class ModelServiceBase
 {

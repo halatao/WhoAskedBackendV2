@@ -8,6 +8,8 @@ public class WhoAskedContext : DbContext
     private readonly IConfiguration _configuration;
 
     public DbSet<User>? Users { get; set; }
+    public DbSet<Queue>? Queue { get; set; }
+    public DbSet<UserInQueue>? UserInQueue { get; set; }
 
     public WhoAskedContext(IConfiguration configuration)
     {

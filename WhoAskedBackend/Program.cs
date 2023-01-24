@@ -3,7 +3,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WhoAskedBackend.Data;
 using WhoAskedBackend.Services;
-using WorkIT_Backend.Services;
+using WhoAskedBackend.Services.ContextServices;
+using WhoAskedBackend.Services.Messaging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +12,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 SecurityService securityService = new(builder.Configuration);
 builder.Services.AddDbContext<WhoAskedContext>();
+builder.Services.AddTransient<QueueService>();
 builder.Services.AddSingleton<SecurityService>();
+builder.Services.AddSingleton<BrokerConnection>();
+builder.Services.AddTransient<QueueProvider>();
+builder.Services.AddTransient<MessageProvider>();
+
 builder.Services.AddTransient<UserService>();
+
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(opt =>

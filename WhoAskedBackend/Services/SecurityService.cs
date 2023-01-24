@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using WorkIT_Backend.Model;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
-namespace WorkIT_Backend.Services;
+namespace WhoAskedBackend.Services;
 
 public class SecurityService
 {
@@ -33,7 +33,7 @@ public class SecurityService
     public string BuildJwtToken(User user)
     {
         var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
-        var roles = new List<String> {user.Role};
+        var roles = new List<string> {user.Role};
         var roleClaims = roles.ToDictionary(
             q => ClaimTypes.Role,
             q => (object) q.ToUpper());
