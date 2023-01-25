@@ -5,12 +5,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WhoAskedBackend;
 using WhoAskedBackend.Api;
+using WhoAskedBackend.Model;
 using WhoAskedBackend.Services;
 using WhoAskedBackend.Services.ContextServices;
-using WorkIT_Backend.Api;
-using WorkIT_Backend.Model;
 
-namespace WorkIT_Backend.Controllers
+namespace WhoAskedBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WorkIT_Backend.Model;
+namespace WhoAskedBackend.Model;
 
 public class User
 {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WorkIT_Backend.Model;
+using WhoAskedBackend.Model;
 
 namespace WhoAskedBackend.Data;
 

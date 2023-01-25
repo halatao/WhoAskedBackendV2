@@ -1,4 +1,4 @@
-﻿namespace WorkIT_Backend.Model;
+﻿namespace WhoAskedBackend.Model;
 
 public class UserInQueue
 {

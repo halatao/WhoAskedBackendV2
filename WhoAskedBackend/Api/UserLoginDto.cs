@@ -1,4 +1,4 @@
-﻿namespace WorkIT_Backend.Api;
+﻿namespace WhoAskedBackend.Api;
 
 public class UserLoginDto
 {

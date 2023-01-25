@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WhoAskedBackend.Data;
-using WorkIT_Backend.Model;
+using WhoAskedBackend.Model;
 
 namespace WhoAskedBackend.Services.ContextServices;
 

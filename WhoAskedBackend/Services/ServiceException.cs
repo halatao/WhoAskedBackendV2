@@ -1,4 +1,4 @@
-﻿namespace WorkIT_Backend.Services;
+﻿namespace WhoAskedBackend.Services;
 
 public class ServiceException : Exception
 {
