@@ -1,7 +1,5 @@
 ﻿using WhoAskedBackend.Model.Messaging;
 using WhoAskedBackend.Services.ContextServices;
-using WhoAskedBackend.Services.Messaging;
-using WhoAskedBackend.Model;
 
 namespace WhoAskedBackend.Services.Messaging
 {

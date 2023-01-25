@@ -1,6 +1,5 @@
 ﻿using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using WhoAskedBackend.Services.Messaging;
 using IModel = RabbitMQ.Client.IModel;
 
 namespace WhoAskedBackend.Services.Messaging

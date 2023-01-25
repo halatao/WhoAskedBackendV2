@@ -1,6 +1,4 @@
-﻿using System.Net.NetworkInformation;
-using RabbitMQ.Client.Events;
-using RabbitMQ.Client;
+﻿using RabbitMQ.Client;
 
 namespace WhoAskedBackend.Services.Messaging
 {

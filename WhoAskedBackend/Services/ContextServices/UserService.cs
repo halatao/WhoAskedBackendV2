@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WhoAskedBackend.Data;
-using WhoAskedBackend.Services.Messaging;
 using WhoAskedBackend.Model;
 
 namespace WhoAskedBackend.Services.ContextServices;
