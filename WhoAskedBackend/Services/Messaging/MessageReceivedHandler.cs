@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Mvc;
 using RabbitMQ.Client.Events;
-using WhoAsked.Services.Models;
+using WhoAskedBackend.Model.Messaging;
 using WhoAskedBackend.Services.Messaging;
 
 namespace WhoAskedBackend.Services.Messaging

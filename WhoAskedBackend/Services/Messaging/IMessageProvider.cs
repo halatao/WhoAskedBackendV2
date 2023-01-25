@@ -1,4 +1,4 @@
-﻿using WhoAsked.Services.Models;
+﻿using WhoAskedBackend.Model.Messaging;
 
 namespace WhoAskedBackend.Services.Messaging
 {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WhoAsked.Services.Models;
+using WhoAskedBackend.Model.Messaging;
 using WhoAskedBackend.Api;
 using WhoAskedBackend.Services.Messaging;
 

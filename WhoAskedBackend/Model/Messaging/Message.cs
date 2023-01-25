@@ -1,4 +1,4 @@
-﻿namespace WhoAsked.Services.Models
+﻿namespace WhoAskedBackend.Model.Messaging
 {
     public class Message
     {
