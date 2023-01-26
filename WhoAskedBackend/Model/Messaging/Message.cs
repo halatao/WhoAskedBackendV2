@@ -2,8 +2,8 @@
 {
     public class Message
     {
-        public int Sender { get; set; }
-        public int QueueId { get; set; }
+        public long Sender { get; set; }
+        public long QueueId { get; set; }
         public DateTime? Sent { get; set; }
         public string? Mess { get; set; }
 

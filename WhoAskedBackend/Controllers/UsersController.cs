@@ -4,6 +4,7 @@ using WhoAskedBackend.Api;
 using WhoAskedBackend.Model;
 using WhoAskedBackend.Services;
 using WhoAskedBackend.Services.ContextServices;
+using WhoAskedBackend.Services.Messaging;
 
 namespace WhoAskedBackend.Controllers
 {
@@ -15,13 +16,15 @@ namespace WhoAskedBackend.Controllers
         private readonly UserService _userService;
         private readonly SecurityService _securityService;
         private readonly ActiveUsersService _activeUsersService;
+        private readonly MessageProvider? _messageProvider;
 
         public UsersController([FromServices] SecurityService securityService, [FromServices] UserService userService,
-            ActiveUsersService activeUsersService)
+            ActiveUsersService activeUsersService, MessageProvider? messageProvider)
         {
             _securityService = securityService;
             _userService = userService;
             _activeUsersService = activeUsersService;
+            _messageProvider = messageProvider;
         }
 
         [AllowAnonymous] //[Authorize(Roles = CustomRoles.User)]
@@ -101,7 +104,7 @@ namespace WhoAskedBackend.Controllers
                 {
                     QueueId = q.QueueId,
                     QueueName = q.QueueName,
-                    LatestMessage = q.LatestMessage,
+                    LatestMessage = _messageProvider!.RetrieveLatestMessages(q.QueueId, 1)!.First().Mess,
                     Users = q.Users.Select(r => new UserSimpleDto
                         {UserId = r.User.UserId, UserName = r.User.UserName, Avatar = r.User.Avatar})
                 }),
@@ -109,7 +112,7 @@ namespace WhoAskedBackend.Controllers
                 {
                     QueueId = q.QueueId,
                     QueueName = q.QueueName,
-                    LatestMessage = q.LatestMessage,
+                    LatestMessage = _messageProvider!.RetrieveLatestMessages(q.QueueId, 1)!.First().Mess,
                     OwnerUsername = q.Owner.UserName,
                     Users =
                         q.Users.Select(r => new UserSimpleDto

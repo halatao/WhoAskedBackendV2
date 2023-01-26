@@ -21,7 +21,7 @@ namespace WhoAskedBackend.Services.Messaging
             MessageReceivedHandler.SetProvider(this);
         }
 
-        public void ImportQueue(int queueId)
+        public void ImportQueue(long queueId)
         {
             _path = Path.Combine(_folder, queueId + ".json");
             if (!System.IO.File.Exists(_path))
@@ -35,7 +35,7 @@ namespace WhoAskedBackend.Services.Messaging
             _messages = JsonSerializer.Deserialize<List<Message>>(json);
         }
 
-        public void ExportQueue(int queueId)
+        public void ExportQueue(long queueId)
         {
             _path = Path.Combine(_folder, queueId + ".json");
             var json = JsonSerializer.Serialize(_messages);
@@ -44,7 +44,7 @@ namespace WhoAskedBackend.Services.Messaging
             File.WriteAllText(_path, json);
         }
 
-        public List<Message>? RetrieveLatestMessages(int queueId, int amount)
+        public List<Message>? RetrieveLatestMessages(long queueId, int amount)
         {
             ImportQueue(queueId);
             if (_messages == null || _messages.Count == 0)

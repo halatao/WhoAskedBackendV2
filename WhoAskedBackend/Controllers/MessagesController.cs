@@ -17,7 +17,7 @@ namespace WhoAskedBackend.Controllers
         }
 
         [HttpGet("{queueId}/{amount}")]
-        public IActionResult GetMessages(int queueId, int amount)
+        public IActionResult GetMessages(long queueId, int amount)
         {
             return Ok(_messageProvider?.RetrieveLatestMessages(queueId, amount)!.Select(mess => new MessageDto
             {
