@@ -9,11 +9,16 @@ public class UserService : ModelServiceBase
 {
     private readonly WhoAskedContext _context;
     private readonly SecurityService _securityService;
+    private readonly QueueService _queueService;
+    private readonly UserInQueueService _userInQueueService;
 
-    public UserService([FromServices] WhoAskedContext context, [FromServices] SecurityService securityService)
+    public UserService([FromServices] WhoAskedContext context, [FromServices] SecurityService securityService,
+        UserInQueueService userInQueueService, QueueService queueService)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _securityService = securityService;
+        _userInQueueService = userInQueueService;
+        _queueService = queueService;
     }
 
     public async Task<User> GetUserByCredentials(string? username, string? password)
@@ -36,12 +41,34 @@ public class UserService : ModelServiceBase
         if (_context.Users!.Any(q => q.UserName == username))
             throw CreateException($"User {username} already exists.", null);
         var hash = _securityService.HashPassword(password);
-        var ret = new User {UserName = username, PasswordHash = hash, Avatar = ""};
+        var ret = new User {UserName = username, PasswordHash = hash, Avatar = "user"};
 
         _context.Users!.Add(ret);
         await _context.SaveChangesAsync();
 
+        await CreateAll(ret);
+
         return ret;
+    }
+
+    public async Task CreateAll(User user)
+    {
+        var queue1 = await _queueService.Create(user.UserName + "'s chat 1", user.UserId);
+        var queue2 = await _queueService.Create(user.UserName + "'s chat 2", user.UserId);
+
+        Queue global;
+        if (user.UserName == "admin")
+        {
+            global = await _queueService.Create("Global chat", user.UserId);
+        }
+        else
+        {
+            global = await _context.Queue!.FirstAsync(q => q.QueueName == "Global chat");
+        }
+
+        await _userInQueueService.Create(user.UserId, global.QueueId);
+        await _userInQueueService.Create(user.UserId, queue1.QueueId);
+        await _userInQueueService.Create(user.UserId, queue2.QueueId);
     }
 
     public async Task<User> GetByUsername(string username)

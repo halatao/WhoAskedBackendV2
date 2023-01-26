@@ -22,12 +22,13 @@ public class WhoAskedContext : DbContext
     {
         modelBuilder.Entity<UserInQueue>(entity =>
         {
-            entity.HasKey(sc => new {sc.UserId, sc.QueueId});
+            entity.HasKey(sc => sc.UserInQueueId);
+            entity.Property(sc => sc.UserInQueueId).ValueGeneratedOnAdd();
 
             entity
                 .HasOne<User>(uq => uq.User)
                 .WithMany(u => u.Queues)
-                .HasForeignKey(u => u.QueueId)
+                .HasForeignKey(u => u.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
             entity
