@@ -18,12 +18,12 @@ public class SecurityService
         _configuration = configuration;
     }
 
-    public string HashPassword(string password)
+    public string HashPassword(string? password)
     {
         return BCrypt.Net.BCrypt.EnhancedHashPassword(password);
     }
 
-    public bool VerifyPassword(string password, string passwordHash)
+    public bool VerifyPassword(string? password, string passwordHash)
     {
         return BCrypt.Net.BCrypt.EnhancedVerify(password, passwordHash);
     }

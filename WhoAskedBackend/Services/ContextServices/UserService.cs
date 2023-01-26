@@ -16,7 +16,7 @@ public class UserService : ModelServiceBase
         _securityService = securityService;
     }
 
-    public async Task<User> GetUserByCredentials(string username, string password)
+    public async Task<User> GetUserByCredentials(string? username, string? password)
     {
         var user = await _context.Users!.FirstOrDefaultAsync(q => q.UserName == username.ToLower())
                    ?? throw CreateException($"User {username} does not exist.");
@@ -26,7 +26,7 @@ public class UserService : ModelServiceBase
         return user;
     }
 
-    public async Task<User> Create(string username, string password)
+    public async Task<User> Create(string? username, string? password)
     {
         EnsureNotNull(username, nameof(username));
         EnsureNotNull(password, nameof(password));
@@ -46,7 +46,7 @@ public class UserService : ModelServiceBase
 
     public async Task<User> GetByUsername(string username)
     {
-        return await _context.Users!.FirstOrDefaultAsync(q => q.UserName == username) ??
+        return (await GetIncluded()).FirstOrDefault(q => q.UserName == username) ??
                throw CreateException($"User with id {username} does not exist", null);
     }
 

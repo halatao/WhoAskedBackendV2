@@ -46,7 +46,7 @@ namespace WhoAskedBackend.Controllers
         {
             var user = await _userService.GetByUsername(username);
 
-            return Ok(user);
+            return Ok(UserToDto(user));
         }
 
         [HttpGet("All")]
@@ -60,12 +60,12 @@ namespace WhoAskedBackend.Controllers
 
         [HttpPost("Login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(string username, string password)
+        public async Task<IActionResult> Login(UserLoginDto login)
         {
             User user;
             try
             {
-                user = await _userService.GetUserByCredentials(username, password);
+                user = await _userService.GetUserByCredentials(login.UserName, login.Password);
             }
             catch (Exception ex)
             {
@@ -79,35 +79,36 @@ namespace WhoAskedBackend.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> CreateUser(UserLoginDto user)
         {
-            return Ok(_securityService.BuildJwtToken(await _userService.Create(user.UserName!, user.Password!)));
+            return Ok(_securityService.BuildJwtToken(await _userService.Create(user.UserName, user.Password)));
         }
 
-        //[NonAction]
-        //public List<UserDto> UserToDto(List<User> users)
-        //{
-        //    return users.Select(user => new UserDto
-        //    {
-        //        UserId = user.UserId,
-        //        UserName = user.UserName,
-        //        Avatar = user.Avatar,
-        //        QueuesOwner = user.OwnedQueues.Select(q => new QueueDto
-        //        {
-        //            QueueId = q.QueueId,
-        //            QueueName = q.QueueName,
-        //            LatestMessage = q.LatestMessage,
-        //            Users = q.Users.Select(r => new UserSimpleDto
-        //                {UserId = r.User.UserId, UserName = r.User.UserName, Avatar = r.User.Avatar})
-        //        }),
-        //        Queues = user.OwnedQueues.Select(q => new QueueDto
-        //        {
-        //            QueueId = q.QueueId,
-        //            QueueName = q.QueueName,
-        //            LatestMessage = q.LatestMessage,
-        //            Users =
-        //                q.Users.Select(r => new UserSimpleDto
-        //                    {UserId = r.User.UserId, UserName = r.User.UserName, Avatar = r.User.Avatar})
-        //        })
-        //    }).ToList();
-        //}
+        [NonAction]
+        public UserDto UserToDto(User user)
+        {
+            return new UserDto
+            {
+                UserId = user.UserId,
+                UserName = user.UserName,
+                Avatar = user.Avatar,
+                QueuesOwner = user.OwnedQueues.Select(q => new QueueDto
+                {
+                    QueueId = q.QueueId,
+                    QueueName = q.QueueName,
+                    LatestMessage = q.LatestMessage,
+                    Users = q.Users.Select(r => new UserSimpleDto
+                        {UserId = r.User.UserId, UserName = r.User.UserName, Avatar = r.User.Avatar})
+                }),
+                Queues = user.OwnedQueues.Select(q => new QueueDto
+                {
+                    QueueId = q.QueueId,
+                    QueueName = q.QueueName,
+                    LatestMessage = q.LatestMessage,
+                    OwnerUsername = q.Owner.UserName,
+                    Users =
+                        q.Users.Select(r => new UserSimpleDto
+                            {UserId = r.User.UserId, UserName = r.User.UserName, Avatar = r.User.Avatar})
+                })
+            };
+        }
     }
 }
