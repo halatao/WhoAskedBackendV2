@@ -108,14 +108,14 @@ namespace WhoAskedBackend.Controllers
                     Users = q.Users.Select(r => new UserSimpleDto
                         {UserId = r.User.UserId, UserName = r.User.UserName, Avatar = r.User.Avatar})
                 }),
-                Queues = user.OwnedQueues.Select(q => new QueueDto
+                Queues = user.Queues.Select(q => new QueueDto
                 {
                     QueueId = q.QueueId,
-                    QueueName = q.QueueName,
+                    QueueName = q.Queue.QueueName,
                     LatestMessage = _messageProvider!.RetrieveLatestMessages(q.QueueId, 1)!.First().Mess,
-                    OwnerUsername = q.Owner.UserName,
+                    OwnerUsername = q.Queue.Owner.UserName,
                     Users =
-                        q.Users.Select(r => new UserSimpleDto
+                        q.Queue.Users.Select(r => new UserSimpleDto
                             {UserId = r.User.UserId, UserName = r.User.UserName, Avatar = r.User.Avatar})
                 })
             };
