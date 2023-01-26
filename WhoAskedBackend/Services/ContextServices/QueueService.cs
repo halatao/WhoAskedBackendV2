@@ -20,12 +20,11 @@ public class QueueService
         return await _context.Queue.ToListAsync();
     }
 
-    public async Task<Queue> Create(string queueName, string latestMessage, long ownerId)
+    public async Task<Queue> Create(string queueName, long ownerId)
     {
         var ret = new Queue
         {
             QueueName = queueName,
-            LatestMessage = latestMessage,
             OwnerId = ownerId
         };
         _context.Add(ret);
