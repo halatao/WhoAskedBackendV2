@@ -40,8 +40,15 @@ namespace WhoAskedBackend.Controllers
         }
 
         [AllowAnonymous] //[Authorize(Roles = CustomRoles.User)]
+        [HttpPost("SetAvatar")]
+        public async Task<IActionResult> SetAvatarByUsername(AvatarPostDto avatar)
+        {
+            await _userService.SetAvatarByUsername(avatar.UserName, avatar.AvatarName);
+            return Ok();
+        }
+
+        [AllowAnonymous] //[Authorize(Roles = CustomRoles.User)]
         [HttpGet("ByUsername")]
-        [Authorize(Roles = CustomRoles.User)]
         public async Task<IActionResult> GetByUsername(string username)
         {
             var user = await _userService.GetByUsername(username);

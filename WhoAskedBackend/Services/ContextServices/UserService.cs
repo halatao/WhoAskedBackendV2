@@ -64,4 +64,11 @@ public class UserService : ModelServiceBase
 
         return await this._context.Users.Include(q => q.Queues).ThenInclude(q => q.Queue).ToListAsync();
     }
+
+    public async Task SetAvatarByUsername(string? avatarUserName, string? avatarAvatarName)
+    {
+        (await (this._context.Users ?? throw new InvalidOperationException()).FirstAsync(q =>
+            q.UserName == avatarUserName)).Avatar = avatarAvatarName;
+        await _context.SaveChangesAsync();
+    }
 }
