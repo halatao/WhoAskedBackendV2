@@ -17,14 +17,17 @@ namespace WhoAskedBackend.Controllers
         private readonly SecurityService _securityService;
         private readonly ActiveUsersService _activeUsersService;
         private readonly MessageProvider? _messageProvider;
+        private readonly UserInQueueService _userInQueueService;
 
         public UsersController([FromServices] SecurityService securityService, [FromServices] UserService userService,
-            ActiveUsersService activeUsersService, MessageProvider? messageProvider)
+            ActiveUsersService activeUsersService, MessageProvider? messageProvider,
+            UserInQueueService userInQueueService)
         {
             _securityService = securityService;
             _userService = userService;
             _activeUsersService = activeUsersService;
             _messageProvider = messageProvider;
+            _userInQueueService = userInQueueService;
         }
 
         [AllowAnonymous] //[Authorize(Roles = CustomRoles.User)]
@@ -47,6 +50,22 @@ namespace WhoAskedBackend.Controllers
         public async Task<IActionResult> SetAvatarByUsername(AvatarPostDto avatar)
         {
             await _userService.SetAvatarByUsername(avatar.UserName, avatar.AvatarName);
+            return Ok();
+        }
+
+        [AllowAnonymous] //[Authorize(Roles = CustomRoles.User)]
+        [HttpPost("RemoveFromQueue")]
+        public async Task<IActionResult> RemoveFromQueue(UserInQueueDto userInQueue)
+        {
+            await _userInQueueService.RemoveFromQueue(userInQueue.QueueId, userInQueue.UserId);
+            return Ok();
+        }
+
+        [AllowAnonymous] //[Authorize(Roles = CustomRoles.User)]
+        [HttpPost("AddToQueue")]
+        public async Task<IActionResult> AddToQueue(UserInQueueDto userInQueue)
+        {
+            await _userInQueueService.AddToQueue(userInQueue.QueueId, userInQueue.UserId);
             return Ok();
         }
 

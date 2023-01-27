@@ -8,7 +8,6 @@ namespace WhoAskedBackend.Services.Messaging
         private readonly List<QueueConnection>? _queues;
         private readonly BrokerConnection _brokerConnection;
         private readonly QueueService _queueService;
-        private readonly MessageReceivedHandler _messageReceivedHandler;
 
         public QueueProvider(BrokerConnection brokerConnection, QueueService queueService)
         {
