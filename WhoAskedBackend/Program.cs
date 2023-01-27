@@ -16,9 +16,12 @@ builder.Services.AddTransient<WhoAskedContext>();
 builder.Services.AddTransient<QueueService>();
 builder.Services.AddSingleton<SecurityService>();
 builder.Services.AddSingleton<BrokerConnection>();
-builder.Services.AddTransient<QueueProvider>();
-builder.Services.AddTransient<MessageProvider>();
 builder.Services.AddSingleton<ActiveUsersService>();
+builder.Services.AddSingleton<QueueStorage>();
+builder.Services.AddTransient<QueueProvider>();
+
+
+builder.Services.AddTransient<MessageProvider>();
 builder.Services.AddTransient<UserService>();
 builder.Services.AddTransient<UserInQueueService>();
 

@@ -6,5 +6,5 @@ public class QueueDto
     public string? QueueName { get; set; }
     public string? LatestMessage { get; set; }
     public string? OwnerUsername { get; set; }
-    public IEnumerable<UserSimpleDto> Users { get; set; }
+    public IEnumerable<UserSimpleDto>? Users { get; set; }
 }

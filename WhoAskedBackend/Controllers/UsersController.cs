@@ -55,17 +55,17 @@ namespace WhoAskedBackend.Controllers
 
         [AllowAnonymous] //[Authorize(Roles = CustomRoles.User)]
         [HttpPost("RemoveFromQueue")]
-        public async Task<IActionResult> RemoveFromQueue(UserInQueueDto userInQueue)
+        public async Task<IActionResult> RemoveFromQueue(RemoveFromQueueDto removeFromQueue)
         {
-            await _userInQueueService.RemoveFromQueue(userInQueue.QueueId, userInQueue.UserId);
+            await _userInQueueService.RemoveFromQueue(removeFromQueue.QueueId, removeFromQueue.UserId);
             return Ok();
         }
 
         [AllowAnonymous] //[Authorize(Roles = CustomRoles.User)]
         [HttpPost("AddToQueue")]
-        public async Task<IActionResult> AddToQueue(UserInQueueDto userInQueue)
+        public async Task<IActionResult> AddToQueue(AddToQueueDto addToQueue)
         {
-            await _userInQueueService.AddToQueue(userInQueue.QueueId, userInQueue.UserId);
+            await _userInQueueService.AddToQueue(addToQueue.QueueId, addToQueue.UserName);
             return Ok();
         }
 
@@ -130,11 +130,11 @@ namespace WhoAskedBackend.Controllers
                 Queues = user.Queues.Select(q => new QueueDto
                 {
                     QueueId = q.QueueId,
-                    QueueName = q.Queue.QueueName,
+                    QueueName = q.Queue?.QueueName,
                     LatestMessage = _messageProvider!.RetrieveLatestMessages(q.QueueId, 1)!.First().Mess,
-                    OwnerUsername = q.Queue.Owner.UserName,
+                    OwnerUsername = q.Queue?.Owner.UserName,
                     Users =
-                        q.Queue.Users.Select(r => new UserSimpleDto
+                        q.Queue?.Users.Select(r => new UserSimpleDto
                             {UserId = r.User.UserId, UserName = r.User.UserName, Avatar = r.User.Avatar})
                 })
             };

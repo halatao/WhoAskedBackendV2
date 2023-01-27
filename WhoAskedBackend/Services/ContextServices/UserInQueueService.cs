@@ -30,9 +30,11 @@ public class UserInQueueService : ModelServiceBase
         await _context.SaveChangesAsync();
     }
 
-    public async Task AddToQueue(long queueId, long userId)
+    public async Task AddToQueue(long queueId, string username)
     {
-        var userInQueue = new UserInQueue {QueueId = queueId, UserId = userId};
+        var user = await (_context.Users ?? throw new InvalidOperationException()).FirstAsync(q =>
+            q.UserName == username);
+        var userInQueue = new UserInQueue {QueueId = queueId, UserId = user.UserId};
         _context.Add(userInQueue);
         await _context.SaveChangesAsync();
     }

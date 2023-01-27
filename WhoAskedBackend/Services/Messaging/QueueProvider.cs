@@ -8,11 +8,13 @@ namespace WhoAskedBackend.Services.Messaging
         private readonly List<QueueConnection>? _queues;
         private readonly BrokerConnection _brokerConnection;
         private readonly QueueService _queueService;
+        private readonly QueueStorage _queueStorage;
 
-        public QueueProvider(BrokerConnection brokerConnection, QueueService queueService)
+        public QueueProvider(BrokerConnection brokerConnection, QueueService queueService, QueueStorage queueStorage)
         {
             this._brokerConnection = brokerConnection;
             this._queueService = queueService;
+            _queueStorage = queueStorage;
             _queues = new List<QueueConnection>();
             SetQueues().Wait();
         }
@@ -24,6 +26,7 @@ namespace WhoAskedBackend.Services.Messaging
             foreach (var queue in queues)
             {
                 _queues?.Add(new QueueConnection(queue.QueueId, _brokerConnection));
+                _queueStorage.Queues.Add(new MessageStorage(queue.QueueId));
             }
         }
 
