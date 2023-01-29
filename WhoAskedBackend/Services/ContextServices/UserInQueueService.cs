@@ -15,7 +15,7 @@ public class UserInQueueService : ModelServiceBase
 
     public async Task<UserInQueue> Create(long userId, long queueId)
     {
-        var ret = new UserInQueue {QueueId = queueId, UserId = userId};
+        var ret = new UserInQueue {QueueId = queueId, UserId = userId, Seen = false};
         _context.Add(ret);
         await _context.SaveChangesAsync();
         return ret;
@@ -36,6 +36,15 @@ public class UserInQueueService : ModelServiceBase
             q.UserName == username);
         var userInQueue = new UserInQueue {QueueId = queueId, UserId = user.UserId};
         _context.Add(userInQueue);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task SetSeen(long queueId, long userId)
+    {
+        var ret = await (_context.UserInQueue ?? throw new InvalidOperationException()).FirstAsync(q =>
+            q.QueueId == queueId && q.UserId == userId);
+        ret.Seen = true;
+
         await _context.SaveChangesAsync();
     }
 }

@@ -2,6 +2,7 @@
 using WhoAskedBackend.Model.Messaging;
 using WhoAskedBackend.Api;
 using WhoAskedBackend.Services.Messaging;
+using WhoAskedBackend.Services.ContextServices;
 
 namespace WhoAskedBackend.Controllers
 {
@@ -10,16 +11,19 @@ namespace WhoAskedBackend.Controllers
     public class MessagesController : ControllerBase
     {
         private readonly MessageProvider? _messageProvider;
+        private readonly UserInQueueService _userInQueueService;
 
-        public MessagesController(MessageProvider messageProvider)
+        public MessagesController(MessageProvider messageProvider, UserInQueueService userInQueueService)
         {
             _messageProvider = messageProvider;
+            _userInQueueService = userInQueueService;
         }
 
         [HttpGet("{queueId}/{amount}")]
-        public IActionResult GetMessages(long queueId, int amount)
+        public async Task<IActionResult> GetMessages(long queueId, long userId, int amount)
         {
-            return Ok(_messageProvider?.RetrieveLatestMessages(queueId, amount)!.Select(mess => new MessageDto
+            await _userInQueueService.SetSeen(queueId, userId);
+            return Ok((_messageProvider?.RetrieveLatestMessages(queueId, amount)!).Select(mess => new MessageDto
             {
                 QueueId = mess.QueueId,
                 Sender = mess.Sender,

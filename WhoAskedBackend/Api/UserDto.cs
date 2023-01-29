@@ -6,5 +6,4 @@ public class UserDto
     public string? UserName { get; set; }
     public string? Avatar { get; set; }
     public IEnumerable<QueueDto>? Queues { get; set; }
-    public IEnumerable<QueueDto> QueuesOwner { get; set; }
 }

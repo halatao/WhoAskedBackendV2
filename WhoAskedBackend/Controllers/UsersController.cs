@@ -119,20 +119,13 @@ namespace WhoAskedBackend.Controllers
                 UserId = user.UserId,
                 UserName = user.UserName,
                 Avatar = user.Avatar,
-                QueuesOwner = user.OwnedQueues.Select(q => new QueueDto
-                {
-                    QueueId = q.QueueId,
-                    QueueName = q.QueueName,
-                    LatestMessage = _messageProvider!.RetrieveLatestMessages(q.QueueId, 1)!.First().Mess,
-                    Users = q.Users.Select(r => new UserSimpleDto
-                        {UserId = r.User.UserId, UserName = r.User.UserName, Avatar = r.User.Avatar})
-                }),
                 Queues = user.Queues.Select(q => new QueueDto
                 {
                     QueueId = q.QueueId,
                     QueueName = q.Queue?.QueueName,
-                    LatestMessage = _messageProvider!.RetrieveLatestMessages(q.QueueId, 1)!.First().Mess,
+                    LatestMessage = _messageProvider!.RetrieveLatestMessage(q.QueueId).Mess,
                     OwnerUsername = q.Queue?.Owner.UserName,
+                    Seen = q.Seen,
                     Users =
                         q.Queue?.Users.Select(r => new UserSimpleDto
                             {UserId = r.User.UserId, UserName = r.User.UserName, Avatar = r.User.Avatar})

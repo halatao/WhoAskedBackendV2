@@ -5,9 +5,10 @@ namespace WhoAskedBackend.Model.Messaging;
 public class MessageStorage
 {
     public long QueueId { get; set; }
-    public List<Message>? _messages { get; set; }
+    private List<Message>? _messages;
     private readonly string _folder;
     private string _path;
+    private long _lastBackup;
 
     public MessageStorage(long queueId)
     {
@@ -15,7 +16,10 @@ public class MessageStorage
         _messages = new List<Message>();
         _path = "";
         _folder = Path.GetFullPath(Environment.CurrentDirectory + "\\Backup");
+        ImportQueue(queueId);
+        _lastBackup = _messages.Count();
     }
+
 
     public void ImportQueue(long queueId)
     {
@@ -31,9 +35,9 @@ public class MessageStorage
         _messages = JsonSerializer.Deserialize<List<Message>>(json);
     }
 
-    public void ExportQueue(long queueId)
+    public void ExportQueue()
     {
-        _path = Path.Combine(_folder, queueId + ".json");
+        _path = Path.Combine(_folder, QueueId + ".json");
         var json = JsonSerializer.Serialize(_messages);
         if (!System.IO.Directory.Exists(_folder))
             System.IO.Directory.CreateDirectory(_folder);
@@ -42,17 +46,20 @@ public class MessageStorage
 
     public List<Message>? RetrieveLatestMessages(int amount)
     {
-        ImportQueue(QueueId);
         if (_messages != null && _messages.Count != 0)
-            return _messages.Count < amount ? _messages : _messages?.GetRange(_messages.Count - amount, amount);
-        _messages?.Add(new Message {Mess = "You can now chat", QueueId = QueueId, Sender = 0, Sent = DateTime.Now});
-        return _messages;
+            return
+                _messages; //return _messages.Count < amount ? _messages : _messages?.GetRange(_messages.Count - amount, amount);
+        return new List<Message>
+        {
+            new Message {Mess = "You can now chat", QueueId = QueueId, Sender = 0, Sent = DateTime.Now}
+        };
     }
 
     public void ReceivedMessage(Message message)
     {
-        ImportQueue(message.QueueId);
         _messages?.Add(message);
-        ExportQueue(message.QueueId);
+        if (_lastBackup + 5 != _messages!.Count) return;
+        _lastBackup = _messages!.Count;
+        ExportQueue();
     }
 }
