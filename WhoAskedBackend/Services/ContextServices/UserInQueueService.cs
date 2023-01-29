@@ -41,8 +41,9 @@ public class UserInQueueService : ModelServiceBase
 
     public async Task SetSeen(long queueId, long userId)
     {
-        var ret = await (_context.UserInQueue ?? throw new InvalidOperationException()).FirstAsync(q =>
-            q.QueueId == queueId && q.UserId == userId);
+        var ret = await (_context.UserInQueue ?? throw new InvalidOperationException("User is not in this queue"))
+            .FirstAsync(q =>
+                q.QueueId == queueId && q.UserId == userId);
         ret.Seen = true;
 
         await _context.SaveChangesAsync();
