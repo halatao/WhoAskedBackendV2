@@ -10,18 +10,15 @@ namespace WhoAskedBackend.Services.Messaging
     {
         private readonly QueueProvider _queueProvider;
         private readonly QueueStorage _queueStorage;
-        private readonly ActiveUsersService _activeUsersService;
         private readonly WhoAskedContext _context;
 
 
         public bool Delivered { get; private set; }
 
-        public MessageProvider(QueueProvider queueProvider, QueueStorage queueStorage,
-            ActiveUsersService activeUsersService, WhoAskedContext context)
+        public MessageProvider(QueueProvider queueProvider, QueueStorage queueStorage, WhoAskedContext context)
         {
             this._queueProvider = queueProvider;
             _queueStorage = queueStorage;
-            _activeUsersService = activeUsersService;
             _context = context;
             MessageReceivedHandler.SetProvider(this);
         }
@@ -35,21 +32,14 @@ namespace WhoAskedBackend.Services.Messaging
 
         public async Task ReceivedMessage(Message message)
         {
-            var active = _activeUsersService.GetActiveUsers();
-
             var queue = await _context.Queue!.Include(q => q.Users).ThenInclude(q => q.User)
                 .FirstAsync(q => q.QueueId == message.QueueId);
-            var inactive = new List<User>();
-            foreach (var user in queue.Users)
-            {
-                if (active.Contains(user.User?.UserName!)) continue;
-                if (user.User != null) inactive.Add(user.User);
-            }
 
-            foreach (var user in inactive)
+            foreach (var user in queue.Users)
             {
                 var usr = await _context.UserInQueue!.FirstAsync(q =>
                     q.QueueId == message.QueueId && q.UserId == user.UserId);
+                if (!usr.Seen) continue;
                 usr.Seen = false;
                 _context.UserInQueue?.Update(usr);
 

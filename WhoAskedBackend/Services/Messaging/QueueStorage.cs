@@ -5,12 +5,10 @@ namespace WhoAskedBackend.Services.Messaging;
 
 public class QueueStorage
 {
-    private readonly ActiveUsersService _activeUsersService;
     public List<MessageStorage> Queues { get; set; }
 
-    public QueueStorage(ActiveUsersService activeUsersService)
+    public QueueStorage()
     {
-        _activeUsersService = activeUsersService;
         this.Queues = new List<MessageStorage>();
     }
 }

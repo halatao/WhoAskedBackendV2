@@ -3,6 +3,8 @@ using WhoAskedBackend.Model.Messaging;
 using WhoAskedBackend.Api;
 using WhoAskedBackend.Services.Messaging;
 using WhoAskedBackend.Services.ContextServices;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace WhoAskedBackend.Controllers
 {
@@ -19,6 +21,7 @@ namespace WhoAskedBackend.Controllers
             _userInQueueService = userInQueueService;
         }
 
+        [Authorize(Roles = CustomRoles.User)]
         [HttpGet("{queueId}/{amount}")]
         public async Task<IActionResult> GetMessages(long queueId, long userId, int amount)
         {
@@ -32,6 +35,7 @@ namespace WhoAskedBackend.Controllers
             }).ToList());
         }
 
+        [Authorize(Roles = CustomRoles.User)]
         [HttpPost]
         public IActionResult PostMessage(MessageDto message)
         {

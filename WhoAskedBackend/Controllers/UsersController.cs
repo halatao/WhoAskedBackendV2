@@ -15,37 +15,20 @@ namespace WhoAskedBackend.Controllers
     {
         private readonly UserService _userService;
         private readonly SecurityService _securityService;
-        private readonly ActiveUsersService _activeUsersService;
         private readonly MessageProvider? _messageProvider;
         private readonly UserInQueueService _userInQueueService;
 
         public UsersController([FromServices] SecurityService securityService, [FromServices] UserService userService,
-            ActiveUsersService activeUsersService, MessageProvider? messageProvider,
+            MessageProvider? messageProvider,
             UserInQueueService userInQueueService)
         {
             _securityService = securityService;
             _userService = userService;
-            _activeUsersService = activeUsersService;
             _messageProvider = messageProvider;
             _userInQueueService = userInQueueService;
         }
 
-        [AllowAnonymous] //[Authorize(Roles = CustomRoles.User)]
-        [HttpPost("UserStatus")]
-        public IActionResult UserStatus(string username, bool active)
-        {
-            _activeUsersService.ToggleUserActive(username, active);
-            return Ok();
-        }
-
-        [AllowAnonymous] //[Authorize(Roles = CustomRoles.User)]
-        [HttpGet("UsersOnline")]
-        public IActionResult UsersOnline()
-        {
-            return Ok(_activeUsersService.GetActiveUsers());
-        }
-
-        [AllowAnonymous] //[Authorize(Roles = CustomRoles.User)]
+        [Authorize(Roles = CustomRoles.User)]
         [HttpPost("SetAvatar")]
         public async Task<IActionResult> SetAvatarByUsername(AvatarPostDto avatar)
         {
@@ -53,7 +36,7 @@ namespace WhoAskedBackend.Controllers
             return Ok();
         }
 
-        [AllowAnonymous] //[Authorize(Roles = CustomRoles.User)]
+        [Authorize(Roles = CustomRoles.User)]
         [HttpPost("RemoveFromQueue")]
         public async Task<IActionResult> RemoveFromQueue(RemoveFromQueueDto removeFromQueue)
         {
@@ -61,7 +44,7 @@ namespace WhoAskedBackend.Controllers
             return Ok();
         }
 
-        [AllowAnonymous] //[Authorize(Roles = CustomRoles.User)]
+        [Authorize(Roles = CustomRoles.User)]
         [HttpPost("AddToQueue")]
         public async Task<IActionResult> AddToQueue(AddToQueueDto addToQueue)
         {
@@ -69,7 +52,7 @@ namespace WhoAskedBackend.Controllers
             return Ok();
         }
 
-        [AllowAnonymous] //[Authorize(Roles = CustomRoles.User)]
+        [Authorize(Roles = CustomRoles.User)]
         [HttpGet("ByUsername")]
         public async Task<IActionResult> GetByUsername(string username)
         {
@@ -79,7 +62,6 @@ namespace WhoAskedBackend.Controllers
         }
 
         [HttpGet("All")]
-        [AllowAnonymous] //[Authorize(Roles = CustomRoles.User)]
         public async Task<IActionResult> GetAll()
         {
             var users = await _userService.GetAll();

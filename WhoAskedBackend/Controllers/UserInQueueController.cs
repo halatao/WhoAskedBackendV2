@@ -6,6 +6,7 @@ namespace WhoAskedBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserInQueueController : ControllerBase
     {
         private readonly UserInQueueService _userInQueueService;
@@ -15,18 +16,11 @@ namespace WhoAskedBackend.Controllers
             _userInQueueService = userInQueueService;
         }
 
+        [Authorize(Roles = CustomRoles.Admin)]
         [HttpPost]
         public async Task<IActionResult> Create(long userId, long queueId)
         {
             return Ok(await _userInQueueService.Create(userId, queueId));
-        }
-
-        [AllowAnonymous]
-        [HttpPost("SetSeen")]
-        public async Task<IActionResult> SetSeen(long queueId, long userId)
-        {
-            await _userInQueueService.SetSeen(queueId, userId);
-            return Ok();
         }
     }
 }
