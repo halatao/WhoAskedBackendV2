@@ -51,7 +51,7 @@ public class MessageStorage
                 _messages; //return _messages.Count < amount ? _messages : _messages?.GetRange(_messages.Count - amount, amount);
         return new List<Message>
         {
-            new Message {Mess = "You can now chat", QueueId = QueueId, Sender = 0, Sent = DateTime.Now}
+            new Message {Mess = "You can now chat", QueueId = QueueId, Sender = 0, Sent = DateTime.UtcNow}
         };
     }
 
