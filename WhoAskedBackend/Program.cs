@@ -82,5 +82,4 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/cdn"
 });
 
-
 await app.RunAsync();
