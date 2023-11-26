@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Net;
+using System.Net.WebSockets;
 using System.Text;
 using WhoAskedBackend.Data;
 using WhoAskedBackend.Services;
@@ -68,4 +70,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-app.Run();
+app.UseWebSockets();
+
+
+await app.RunAsync();

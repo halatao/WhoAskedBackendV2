@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Net.WebSockets;
+using System.Text;
 using WhoAskedBackend.Data;
 using WhoAskedBackend.Model;
 using WhoAskedBackend.Model.Messaging;
@@ -59,5 +61,8 @@ namespace WhoAskedBackend.Services.Messaging
         {
             return _queueStorage.Queues.Find(q => q.QueueId == queueId)!.RetrieveLatestMessages(1)!.Last();
         }
+
+      
+
     }
 }
