@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using System.Net;
 using System.Net.WebSockets;
@@ -73,6 +74,13 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseWebSockets();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles")),
+    RequestPath = "/cdn"
+});
 
 
 await app.RunAsync();
