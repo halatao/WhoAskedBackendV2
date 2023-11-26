@@ -5,6 +5,7 @@ using WhoAskedBackend.Data;
 using WhoAskedBackend.Model;
 using WhoAskedBackend.Model.Messaging;
 using WhoAskedBackend.Services.ContextServices;
+using WhoAskedBackend.Services.WebSocket;
 
 namespace WhoAskedBackend.Services.Messaging
 {
@@ -13,15 +14,18 @@ namespace WhoAskedBackend.Services.Messaging
         private readonly QueueProvider _queueProvider;
         private readonly QueueStorage _queueStorage;
         private readonly WhoAskedContext _context;
+        private readonly WebSocketHandler _webSocketHandler;
 
 
         public bool Delivered { get; private set; }
 
-        public MessageProvider(QueueProvider queueProvider, QueueStorage queueStorage, WhoAskedContext context)
+        public MessageProvider(QueueProvider queueProvider, QueueStorage queueStorage, WhoAskedContext context,
+            WebSocketHandler webSocketHandler)
         {
-            this._queueProvider = queueProvider;
+            _queueProvider = queueProvider;
             _queueStorage = queueStorage;
             _context = context;
+            _webSocketHandler = webSocketHandler;
             MessageReceivedHandler.SetProvider(this);
         }
 
@@ -49,6 +53,9 @@ namespace WhoAskedBackend.Services.Messaging
             }
 
             _queueStorage.Queues.Find(q => q.QueueId == message.QueueId)?.ReceivedMessage(message);
+
+            await _webSocketHandler.SendToQueueUsers(message.QueueId);
+
             Delivered = true;
         }
 
@@ -61,8 +68,5 @@ namespace WhoAskedBackend.Services.Messaging
         {
             return _queueStorage.Queues.Find(q => q.QueueId == queueId)!.RetrieveLatestMessages(1)!.Last();
         }
-
-      
-
     }
 }

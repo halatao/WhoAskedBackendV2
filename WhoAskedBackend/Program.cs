@@ -7,6 +7,7 @@ using WhoAskedBackend.Data;
 using WhoAskedBackend.Services;
 using WhoAskedBackend.Services.ContextServices;
 using WhoAskedBackend.Services.Messaging;
+using WhoAskedBackend.Services.WebSocket;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 SecurityService securityService = new(builder.Configuration);
 builder.Services.AddTransient<WhoAskedContext>();
+builder.Services.AddSingleton<WebSocketHandler>();
 
 builder.Services.AddTransient<QueueService>();
 builder.Services.AddSingleton<SecurityService>();

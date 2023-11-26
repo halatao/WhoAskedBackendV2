@@ -4,8 +4,9 @@ using WhoAskedBackend.Api;
 using WhoAskedBackend.Services.Messaging;
 using WhoAskedBackend.Services.ContextServices;
 using Microsoft.AspNetCore.Authorization;
-using System.Data;
 using System.Net.WebSockets;
+using System.Text;
+using WebSocketHandler = WhoAskedBackend.Services.WebSocket.WebSocketHandler;
 
 namespace WhoAskedBackend.Controllers
 {
@@ -15,11 +16,14 @@ namespace WhoAskedBackend.Controllers
     {
         private readonly MessageProvider? _messageProvider;
         private readonly UserInQueueService _userInQueueService;
+        private readonly WebSocketHandler _webSocketManager;
 
-        public MessagesController(MessageProvider messageProvider, UserInQueueService userInQueueService)
+        public MessagesController(MessageProvider messageProvider, UserInQueueService userInQueueService,
+            WebSocketHandler webSocketManager)
         {
             _messageProvider = messageProvider;
             _userInQueueService = userInQueueService;
+            _webSocketManager = webSocketManager;
         }
 
         [Authorize(Roles = CustomRoles.User)]
@@ -50,14 +54,15 @@ namespace WhoAskedBackend.Controllers
             return Ok();
         }
 
-        [Route("/ws")]
+        [Route("/QueueWS")]
         [HttpGet]
-        public async Task Get()
+        public async Task Get(long queueId)
         {
             if (HttpContext.WebSockets.IsWebSocketRequest)
             {
-                WebSocket webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
-                await Echo(HttpContext, webSocket);
+                var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
+                var socketId = _webSocketManager.AddSocket(queueId, webSocket);
+                await Receive(HttpContext, webSocket, socketId);
             }
             else
             {
@@ -65,21 +70,24 @@ namespace WhoAskedBackend.Controllers
             }
         }
 
-        private async Task Echo(HttpContext context, WebSocket webSocket)
+
+        private async Task Receive(HttpContext context, WebSocket webSocket, string socketId)
         {
             var buffer = new byte[1024 * 4];
-            WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-            while (!result.CloseStatus.HasValue)
+            var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+
+            var tcs = new TaskCompletionSource<bool>();
+
+            if (result.CloseStatus.HasValue)
             {
-                await webSocket.SendAsync(new ArraySegment<byte>(buffer, 0, result.Count), result.MessageType, result.EndOfMessage, CancellationToken.None);
-
-                result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                tcs.SetResult(true);
             }
-            await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
+
+            await tcs.Task;
+
+            await webSocket.CloseAsync(result.CloseStatus!.Value, result.CloseStatusDescription,
+                CancellationToken.None);
+            await _webSocketManager.RemoveSocket(socketId);
         }
-
-
-
-
     }
 }
